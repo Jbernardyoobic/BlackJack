@@ -1,1 +1,3 @@
 # BlacjJack
+
+`node blackjackFinal.js`

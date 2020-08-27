@@ -7,11 +7,11 @@ const DECKS = 6;
 // Number of players in the game.
 const PLAYERSNUMBER = 7;
 // Money the players start with.
-const STARTMONEY = 200;
+const STARTMONEY = 20000;
 // Base stake for each play.
-const STAKE = 20;
+const STAKE = 2;
 // Number of plays in the game.
-const NUMBEROFPLAYS = 50;
+const NUMBEROFPLAYS = 100000;
 
 /**
  * Strategies :

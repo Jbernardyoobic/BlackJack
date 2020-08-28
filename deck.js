@@ -2,7 +2,8 @@ class Deck {
     constructor(decksNumber) {
         this.decksNumber = decksNumber;
         this.deck = [];
-        this.occurences = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        this.occurences = [];
+        this.newDeck();
     }
 
     /**
@@ -12,18 +13,19 @@ class Deck {
         this.deck = [];
         this.occurences = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         const heads = ['J', 'Q', 'K'];
-        for (let a = 0; a < this.decksNumber; ++a) {
-            for (let j = 0; j < 4; ++j) {
-                for (let i = 1; i < 11; ++i) {
+        for (let a = 0; a < this.decksNumber; a++) {
+            for (let j = 0; j < 4; j++) {
+                for (let i = 1; i < 11; i++) {
                     this.deck.push(i);
                     this.occurences[i - 1]++;
                 }
                 for (let _h of heads) {
                     this.deck.push(10);
-                    this.occurences[10]++
+                    this.occurences[9]++
                 }
             }
         }
+        this.shuffle();
     }
 
     // Random shuffling of the deck.

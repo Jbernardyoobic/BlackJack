@@ -1,11 +1,5 @@
 const helpers = require('./helpers');
-const globals = require('./globals');
-
-const SOFTSTRAT = globals.SOFTSTRAT;
-const HARDSTRAT = globals.HARDSTRAT;
-const SPLITSTRAT = globals.SPLITSTRAT;
-const ACESTRAT = globals.ACESTRAT;
-const GIVEUPSTRAT = globals.GIVEUPSTRAT;
+const {SOFTSTRAT, HARDSTRAT, SPLITSTRAT, ACESTRAT, GIVEUPSTRAT, STAKE} = require('./globals');
 
 // Represents a hand.
 class Hand {
@@ -13,7 +7,7 @@ class Hand {
         // Cards of the hand.
         this.cards = [];
         // Stake of the hand.
-        this.stake = globals.STAKE;
+        this.stake = STAKE;
     }
 }
 
@@ -77,8 +71,8 @@ class Player {
     * @param {Hand} hand - The hand the player plays with. 
     */
     split(hand, dealerBaseScore) {
-        if (this.money >= globals.STAKE) {
-            this.money -= globals.STAKE;
+        if (this.money >= STAKE) {
+            this.money -= STAKE;
             this.hands.push(new Hand());
             let l = this.hands.length;
             this.hands[l - 1].cards.push(hand.cards.pop());

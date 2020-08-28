@@ -38,12 +38,12 @@ function isBust(cards) {
 }
 
 /**
- * Returns if whether or not a hand can be splitted.
+ * Return if a hand can be splitted.
  * @param {[Number]} cards - Cards of a hand.
  * @param {Number} - Number of hands of a player
  */
 function canSplit(cards, handsLength) {
-    return handsLength < 3 && cards.length === 2 && cards[0] === cards[1];
+    return handsLength > 0 && handsLength < 3 && cards.length === 2 && cards[0] === cards[1];
 }
 
 exports.canSplit = canSplit;

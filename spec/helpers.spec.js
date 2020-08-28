@@ -1,18 +1,6 @@
 const helpers = require('../helpers');
 
-// describe('Check the newDeck helper', () => {
-//     it('should return a complete deck', () => {
-//         let deck = helpers.newDeck();
-//         let occurences = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-//         let expected = [24, 24, 24, 24, 24, 24, 24, 24, 24, 96];
-//         for (c of deck) {
-//             occurences[c - 1]++;
-//         }
-//         expect(JSON.stringify(occurences)).toEqual(JSON.stringify(expected));
-//     })
-// });
-
-describe('Check the cardSum helper', () => {
+describe('The cardSum helper', () => {
     it('should return 4', () => {
         expect(helpers.cardSum([2,2])).toEqual(4);
     })
@@ -104,11 +92,9 @@ describe('Check the cardSum helper', () => {
     })
 });
 
-describe('Check the isBlackJack helper', () => {
+describe('The isBlackJack helper', () => {
     it('should return false', () => {
         expect(helpers.isBlackJack([9,10])).toBeFalse();
-    })
-    it('should return false', () => {
         expect(helpers.isBlackJack([9,10,2])).toBeFalse();
     })
     it('should return true', () => {
@@ -116,14 +102,25 @@ describe('Check the isBlackJack helper', () => {
     })
 });
 
-describe('Check the isBust helper', () => {
-    it('should return false 1', () => {
-        expect(helpers.isBust([3,2,1,1,1])).toBeFalse();
-    })
-    it('should return false 2', () => {
+describe('The isBust helper', () => {
+    it('should return false', () => {
+        expect(helpers.isBust([3,2,1,1,1,1,1,1,1])).toBeFalse();
         expect(helpers.isBust([9,10,2])).toBeFalse();
     })
     it('should return true', () => {
         expect(helpers.isBust([10,10,2])).toBeTrue();
     })
 });
+
+describe('The canSplit helper', () => {
+    it('should return false', () => {
+        expect(helpers.canSplit([10,2,10], 1)).toBeFalse();
+        expect(helpers.canSplit([3,2], 2)).toBeFalse();
+        expect(helpers.canSplit([4,4], 3)).toBeFalse();
+        expect(helpers.canSplit([7,7], 0)).toBeFalse();
+    })
+    it('should return true', () => {
+        expect(helpers.canSplit([10,10], 2)).toBeTrue();
+        expect(helpers.canSplit([1,1], 1)).toBeTrue();
+    })
+})

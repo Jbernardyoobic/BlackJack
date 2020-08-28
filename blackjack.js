@@ -119,7 +119,6 @@ class BlackJack {
      */
     play() {
         this.deck.newDeck(); // Full deck at the beginning of every play.
-        this.deck.shuffle(); // Shuffle the deck.
         this.payStake(); // Pay the stake required to play.
         this.deal(); // Deal the cards.
         this.dealer.baseScore = helpers.cardSum(this.dealer.cards);

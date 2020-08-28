@@ -1,13 +1,13 @@
 const helpers = require('./helpers');
-const {SOFTSTRAT, HARDSTRAT, SPLITSTRAT, ACESTRAT, GIVEUPSTRAT, STAKE} = require('./globals');
+const { SOFTSTRAT, HARDSTRAT, SPLITSTRAT, ACESTRAT, GIVEUPSTRAT } = require('./strats');
 
 // Represents a hand.
 class Hand {
-    constructor() {
+    constructor(baseStake) {
         // Cards of the hand.
         this.cards = [];
         // Stake of the hand.
-        this.stake = STAKE;
+        this.stake = baseStake;
     }
 }
 
@@ -17,7 +17,7 @@ class Player {
      * Player constructor.
      * @param {Number} id - id to distinguish players between them. 
      */
-    constructor(id, startMoney, deck) {
+    constructor(id, startMoney, baseStake, deck) {
         // Id of the player.
         this.id = id;
         // Money of the player.
@@ -26,6 +26,8 @@ class Player {
         this.hands = [];
         // In the case the player gives up or does not have enough money to play.
         this.isPlaying = true;
+        // Base stake for each play.
+        this.baseStake = baseStake;
         // Reference to the deck.
         this.deck = deck;
         // Score of the first card of the dealer (for strategies).
@@ -46,9 +48,9 @@ class Player {
             }
             let action = 9;
             if (hand.cards.includes(1)) {
-                action = SOFTSTRAT[score][this.dealerBaseScore];
+                action = SOFTSTRAT[score - 12][this.dealerBaseScore - 2];
             } else {
-                action = HARDSTRAT[score][this.dealerBaseScore];
+                action = HARDSTRAT[score - 4][this.dealerBaseScore - 2];
             }
             stop = action === 0;
         }
@@ -64,7 +66,7 @@ class Player {
             hand.stake *= 2;
             this.deck.drawCard(hand.cards);
         } else {
-            this.hit(hand, this.dealerBaseScore);
+            this.hit(hand);
         }
     }
 
@@ -73,24 +75,35 @@ class Player {
     * @param {Hand} hand - The hand the player plays with. 
     */
     split(hand) {
-        if (this.money >= STAKE) {
-            this.money -= STAKE;
-            this.hands.push(new Hand());
+        if (this.money >= this.baseStake) {
+            this.money -= this.baseStake;
+            this.hands.push(new Hand(this.baseStake));
             let l = this.hands.length;
             this.hands[l - 1].cards.push(hand.cards.pop());
             this.deck.drawCard(hand.cards);
-            this.handTurn(hand, this.dealerBaseScore);
+            this.handTurn(hand);
             this.deck.drawCard(this.hands[l - 1].cards);
-            this.handTurn(this.hands[l - 1], this.dealerBaseScore);
+            this.handTurn(this.hands[l - 1]);
         } else {
-            this.hit(hand, this.dealerBaseScore);
+            this.hit(hand);
         }
     }
 
     // Return whether the player should give up or not.
     shouldGiveUp() {
         let score = helpers.cardSum(this.hands[0].cards);
-        return GIVEUPSTRAT[score][this.dealerBaseScore] === 1;
+        return GIVEUPSTRAT[score - 4][this.dealerBaseScore - 2] === 1;
+    }
+
+    // Remove stake money from the player.
+    payStake() {
+        if (this.money >= this.baseStake * 2) {
+            this.hands.push(new Hand(this.baseStake));
+            this.money -= this.baseStake;
+            this.isPlaying = true;
+        } else {
+            this.isPlaying = false;
+        }
     }
 
     /**
@@ -102,15 +115,15 @@ class Player {
         let action = 9; // Error value for an action.
         if (helpers.canSplit(hand.cards, this.hands.length)) {
             if (hand.cards[0] === '1' && hand.cards[1] === '1') {
-                action = ACESTRAT[this.dealerBaseScore];
+                action = ACESTRAT[this.dealerBaseScore - 2];
             } else {
-                action = SPLITSTRAT[score][this.dealerBaseScore];
+                action = SPLITSTRAT[score - 4][this.dealerBaseScore - 2];
             }
         } else {
             if (hand.cards.includes(1)) {
-                action = SOFTSTRAT[score][this.dealerBaseScore];
+                action = SOFTSTRAT[score - 12][this.dealerBaseScore - 2];
             } else {
-                action = HARDSTRAT[score][this.dealerBaseScore];
+                action = HARDSTRAT[score - 4][this.dealerBaseScore - 2];
             }
         }
         switch(action) {

@@ -29,12 +29,12 @@ function showStats(players, startMoney) {
  * Call the play() function n times.
  * @param {Number} n - Number of times to call play().
  */
-function game(numberOfPlays, numberOfDecks, playersNumber, startMoney) {
-    const bj = new BlackJack(numberOfDecks, playersNumber, startMoney);
+function game(numberOfPlays, numberOfDecks, playersNumber, startMoney, baseStake) {
+    const bj = new BlackJack(numberOfDecks, playersNumber, startMoney, baseStake);
     for (let i = 0; i < numberOfPlays; ++i) {
         bj.play();
     }
     showStats(bj.players, startMoney);
 }
 
-game(100, 6, 7, 500);
+game(200, 6, 7, 500, 2);

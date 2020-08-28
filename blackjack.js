@@ -1,7 +1,6 @@
-const globals = require('./globals');
 const helpers = require('./helpers');
 const { Deck } = require('./deck');
-const { Player, Hand } = require('./player');
+const { Player } = require('./player');
 
 class Dealer {
     constructor() {
@@ -11,31 +10,19 @@ class Dealer {
 }
 
 class BlackJack {
-    constructor(numberOfDecks, playersNumber, startMoney) {
+    constructor(numberOfDecks, playersNumber, startMoney, baseStake) {
         this.deck = new Deck(numberOfDecks);
         this.players = [];
         for (let i = 0; i < playersNumber; ++i) {
-            this.players.push(new Player(i, startMoney, this.deck));
+            this.players.push(new Player(i, startMoney, baseStake, this.deck));
         }
         this.dealer = new Dealer();
-    }
-
-    // Remove stake money from the players and mark them as 'playing'.
-    payStake() {
-        for (let p of this.players) {
-            if (p.money >= globals.STAKE * 2) {
-                p.hands.push(new Hand());
-                p.money -= globals.STAKE;
-                p.isPlaying = true;
-            } else {
-                p.isPlaying = false;
-            }
-        }
     }
 
     // Deal one card to every player, then one to the dealer and finally another card for every player.
     deal() {
         for (let p of this.players) {
+            p.payStake();
             if (p.isPlaying) {
                 this.deck.drawCard(p.hands[0].cards);
             }
@@ -126,7 +113,6 @@ class BlackJack {
      */
     play() {
         this.deck.newDeck(); // Full deck at the beginning of every play.
-        this.payStake(); // Pay the stake required to play.
         this.deal(); // Deal the cards.
         this.giveUpOption(); // Give the possibility to give up after the cards are dealt.
         this.blackJackCheck(); // Check if players already won.

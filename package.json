@@ -1,0 +1,28 @@
+{
+  "name": "blackjack",
+  "version": "1.0.0",
+  "description": "`node blackjackFinal.js`",
+  "main": "blackjackFinal.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jbernardyoobic/BlackJack.git"
+  },
+  "keywords": [
+    "blackjack"
+  ],
+  "author": "jbernard@yoobic.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jbernardyoobic/BlackJack/issues"
+  },
+  "homepage": "https://github.com/Jbernardyoobic/BlackJack#readme",
+  "devDependencies": {
+    "jasmine": "^3.6.1"
+  }
+}

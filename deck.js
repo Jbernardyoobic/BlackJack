@@ -18,7 +18,7 @@ class Deck {
                     this.deck.push(i);
                     this.occurences[i - 1]++;
                 }
-                for (let h of heads) {
+                for (let _h of heads) {
                     this.deck.push(10);
                     this.occurences[10]++
                 }

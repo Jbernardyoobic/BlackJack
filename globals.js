@@ -1,13 +1,5 @@
-// Number of players in the game.
-const PLAYERSNUMBER = 7;
-// Money the players start with.
-const STARTMONEY = 200;
 // Base stake for each play.
 const STAKE = 2;
-// Number of plays in the game.
-const NUMBEROFPLAYS = 10;
-// Number of decks
-const DECKS = 6;
 
 /**
  * Strategies :
@@ -135,8 +127,4 @@ exports.SPLITSTRAT = SPLITSTRAT;
 exports.SOFTSTRAT = SOFTSTRAT;
 exports.HARDSTRAT = HARDSTRAT;
 exports.GIVEUPSTRAT = GIVEUPSTRAT;
-exports.PLAYERSNUMBER = PLAYERSNUMBER;
-exports.NUMBEROFPLAYS = NUMBEROFPLAYS;
 exports.STAKE = STAKE;
-exports.STARTMONEY = STARTMONEY;
-exports.DECKS = DECKS;

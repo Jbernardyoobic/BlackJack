@@ -5,11 +5,11 @@ const { Player, Hand } = require('./player');
 const { Dealer } = require('./dealer');
 
 class BlackJack {
-    constructor() {
-        this.deck = new Deck(globals.DECKS);
+    constructor(numberOfDecks, playersNumber, startMoney) {
+        this.deck = new Deck(numberOfDecks);
         this.players = [];
-        for (let i = 0; i < globals.PLAYERSNUMBER; ++i) {
-            this.players.push(new Player(i, globals.STARTMONEY, this.deck));
+        for (let i = 0; i < playersNumber; ++i) {
+            this.players.push(new Player(i, startMoney, this.deck));
         }
         this.dealer = new Dealer();
     }

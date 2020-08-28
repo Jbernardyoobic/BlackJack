@@ -2,7 +2,13 @@ const globals = require('./globals');
 const helpers = require('./helpers');
 const { Deck } = require('./deck');
 const { Player, Hand } = require('./player');
-const { Dealer } = require('./dealer');
+
+class Dealer {
+    constructor() {
+        // Cards of the dealer.
+        this.cards = [];
+    }
+}
 
 class BlackJack {
     constructor(numberOfDecks, playersNumber, startMoney) {
@@ -37,6 +43,7 @@ class BlackJack {
         this.deck.drawCard(this.dealer.cards);
         for (let p of this.players) {
             if (p.isPlaying) {
+                p.dealerBaseScore = helpers.cardSum(this.dealer.cards);
                 this.deck.drawCard(p.hands[0].cards);
             }
         }
@@ -45,7 +52,7 @@ class BlackJack {
     // Depending on their hand and the dealer's hand, the player can choose to give up and get back half the stake.
     giveUpOption() {
         for (let p of this.players) {
-            if (p.isPlaying && p.shouldGiveUp(this.dealer.baseScore)) {
+            if (p.isPlaying && p.shouldGiveUp()) {
                 p.isPlaying = false;
                 p.money += p.hands[0].stake * 0.5;
             }
@@ -57,7 +64,7 @@ class BlackJack {
      */
     blackJackCheck() {
         for (let p of this.players) {
-            if (p.isPlaying && helpers.isBlackJack(p.hands[0].cards) && this.dealer.baseScore < 10) {
+            if (p.isPlaying && helpers.isBlackJack(p.hands[0].cards) && p.dealerBaseScore < 10) {
                 p.isPlaying = false;
                 p.money += p.hands[0].stake * 2.5;
             }
@@ -121,9 +128,13 @@ class BlackJack {
         this.deck.newDeck(); // Full deck at the beginning of every play.
         this.payStake(); // Pay the stake required to play.
         this.deal(); // Deal the cards.
-        this.dealer.baseScore = helpers.cardSum(this.dealer.cards);
         this.giveUpOption(); // Give the possibility to give up after the cards are dealt.
-        this.blackJackCheck() // Check if players already won.
+        this.blackJackCheck(); // Check if players already won.
+        for (let p of this.players) {
+            if (p.isPlaying) {
+                p.handTurn(p.hands[0]);
+            }
+        }
         this.dealerTurn(); // Dealer plays.
         this.playEnd(); // Check for results.
         this.emptyHands();

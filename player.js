@@ -28,13 +28,15 @@ class Player {
         this.isPlaying = true;
         // Reference to the deck.
         this.deck = deck;
+        // Score of the first card of the dealer (for strategies).
+        this.dealerBaseScore = 0;
     }
 
     /**
      * Draw a card or more.
      * @param {Hand} hand - The hand the player plays with. 
      */
-    hit(hand, dealerBaseScore) {
+    hit(hand) {
         let stop = false;
         while (!stop) {
             this.deck.drawCard(hand.cards);
@@ -44,9 +46,9 @@ class Player {
             }
             let action = 9;
             if (hand.cards.includes(1)) {
-                action = SOFTSTRAT[score][dealerBaseScore];
+                action = SOFTSTRAT[score][this.dealerBaseScore];
             } else {
-                action = HARDSTRAT[score][dealerBaseScore];
+                action = HARDSTRAT[score][this.dealerBaseScore];
             }
             stop = action === 0;
         }
@@ -56,13 +58,13 @@ class Player {
      * Double the stake on the current hand and draw one card.
      * @param {Hand} hand - The hand the player plays with. 
      */
-    double(hand, dealerBaseScore) {
+    double(hand) {
         if (this.money >= hand.stake) {
             this.money -= hand.stake;
             hand.stake *= 2;
             this.deck.drawCard(hand.cards);
         } else {
-            this.hit(hand, dealerBaseScore);
+            this.hit(hand, this.dealerBaseScore);
         }
     }
 
@@ -70,58 +72,58 @@ class Player {
     * Split the hand in two and add a stake to the new hand.
     * @param {Hand} hand - The hand the player plays with. 
     */
-    split(hand, dealerBaseScore) {
+    split(hand) {
         if (this.money >= STAKE) {
             this.money -= STAKE;
             this.hands.push(new Hand());
             let l = this.hands.length;
             this.hands[l - 1].cards.push(hand.cards.pop());
             this.deck.drawCard(hand.cards);
-            this.handTurn(hand, dealerBaseScore);
+            this.handTurn(hand, this.dealerBaseScore);
             this.deck.drawCard(this.hands[l - 1].cards);
-            this.handTurn(this.hands[l - 1], dealerBaseScore);
+            this.handTurn(this.hands[l - 1], this.dealerBaseScore);
         } else {
-            this.hit(hand, dealerBaseScore);
+            this.hit(hand, this.dealerBaseScore);
         }
     }
 
     // Return whether the player should give up or not.
-    shouldGiveUp(dealerBaseScore) {
+    shouldGiveUp() {
         let score = helpers.cardSum(this.hands[0].cards);
-        return GIVEUPSTRAT[score][dealerBaseScore] === 1;
+        return GIVEUPSTRAT[score][this.dealerBaseScore] === 1;
     }
 
     /**
      * Main method for the player when playing a hand.
      * @param {Hand} hand - The hand the player plays with.
      */
-    handTurn(hand, dealerBaseScore) {
+    handTurn(hand) {
         let score = helpers.cardSum(hand.cards);
         let action = 9; // Error value for an action.
         if (helpers.canSplit(hand.cards, this.hands.length)) {
             if (hand.cards[0] === '1' && hand.cards[1] === '1') {
-                action = ACESTRAT[dealerBaseScore];
+                action = ACESTRAT[this.dealerBaseScore];
             } else {
-                action = SPLITSTRAT[score][dealerBaseScore];
+                action = SPLITSTRAT[score][this.dealerBaseScore];
             }
         } else {
             if (hand.cards.includes(1)) {
-                action = SOFTSTRAT[score][dealerBaseScore];
+                action = SOFTSTRAT[score][this.dealerBaseScore];
             } else {
-                action = HARDSTRAT[score][dealerBaseScore];
+                action = HARDSTRAT[score][this.dealerBaseScore];
             }
         }
         switch(action) {
             case 0:
                 return;
             case 1:
-                this.hit(hand, dealerBaseScore);
+                this.hit(hand);
                 break;
             case 2:
-                this.double(hand, dealerBaseScore);
+                this.double(hand);
                 break;
             case 3:
-                this.split(hand, dealerBaseScore);
+                this.split(hand);
                 break;
             case 9:
                 console.error('WTF : 9 received');

@@ -1,4 +1,4 @@
-# BlacjJack
+# BlackJack
 
 ## How to use
 ```

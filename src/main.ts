@@ -1,10 +1,11 @@
-const { BlackJack } = require("./blackjack");
+import { BlackJack } from './blackjack';
+import { Player } from './player';
 
 /**
  * Show the stats of the n plays of the game.
- * @param {[Players]} players - The list of players.
+ * @param {Player[]} players - The list of players.
  */
-function showStats(players, startMoney) {
+function showStats(players: Player[], startMoney: number) {
     let s = 0;
     let max = 0;
     let min = 99999999999999;
@@ -27,9 +28,9 @@ function showStats(players, startMoney) {
 
 /**
  * Call the play() function n times.
- * @param {Number} n - Number of times to call play().
+ * @param {number} n - Number of times to call play().
  */
-function game(numberOfPlays, numberOfDecks, playersNumber, startMoney, baseStake) {
+function game(numberOfPlays: number, numberOfDecks: number, playersNumber: number, startMoney: number, baseStake: number) {
     const bj = new BlackJack(numberOfDecks, playersNumber, startMoney, baseStake);
     for (let i = 0; i < numberOfPlays; ++i) {
         bj.play();

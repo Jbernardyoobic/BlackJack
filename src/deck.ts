@@ -1,8 +1,10 @@
-class Deck {
-    constructor(decksNumber) {
+export class Deck {
+    public decksNumber: number;
+    public deck: number[] = new Array();
+    public occurences: number[] = new Array();
+
+    constructor(decksNumber: number) {
         this.decksNumber = decksNumber;
-        this.deck = [];
-        this.occurences = [];
         this.newDeck();
     }
 
@@ -10,7 +12,7 @@ class Deck {
     * The deck is composed of numbers from 1 to 10 representing the value of the card and not the card itself.
     */
     newDeck() {
-        this.deck = [];
+        this.deck = new Array();
         this.occurences = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         const heads = ['J', 'Q', 'K'];
         for (let a = 0; a < this.decksNumber; a++) {
@@ -38,13 +40,11 @@ class Deck {
 
     /**
      * Draw a card from the deck and put it in the designated hand.
-     * @param {[Number]} cards - The hand in which the new card will be added.
+     * @param {number[]} cards - The hand in which the new card will be added.
      */
-    drawCard(cards) {
+    drawCard(cards: number[]) {
         let c = this.deck.shift();
         cards.push(c);
         this.occurences[c - 1]--;
     }
 }
-
-exports.Deck = Deck;

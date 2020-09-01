@@ -1,49 +1,53 @@
-const helpers = require('./helpers');
-const { SOFTSTRAT, HARDSTRAT, SPLITSTRAT, ACESTRAT, GIVEUPSTRAT } = require('./strats');
+import { canSplit, cardSum, isBust } from './helpers';
+import { Deck } from './deck';
+import { SOFTSTRAT, HARDSTRAT, SPLITSTRAT, ACESTRAT, GIVEUPSTRAT } from './strats';
 
 // Represents a hand.
-class Hand {
-    constructor(baseStake) {
-        // Cards of the hand.
-        this.cards = [];
+export class Hand {
+    public cards: number[] = new Array();
+    public stake: number;
+
+    constructor(baseStake: number) {
         // Stake of the hand.
         this.stake = baseStake;
     }
 }
 
 // Represents a player
-class Player {
+export class Player {
+    public id: number;
+    public money: number;
+    public hands: Hand[] = new Array();
+    public isPlaying: boolean = true;
+    public baseStake: number;
+    public dealerBaseScore: number = 0;
+    private deck: Deck;
+
     /**
      * Player constructor.
      * @param {Number} id - id to distinguish players between them. 
      */
-    constructor(id, startMoney, baseStake, deck) {
+    constructor(id: number, startMoney: number, baseStake: number, deck: Deck) {
         // Id of the player.
         this.id = id;
         // Money of the player.
         this.money = startMoney;
-        // Array of Hand objects.
-        this.hands = [];
-        // In the case the player gives up or does not have enough money to play.
-        this.isPlaying = true;
         // Base stake for each play.
         this.baseStake = baseStake;
         // Reference to the deck.
         this.deck = deck;
-        // Score of the first card of the dealer (for strategies).
-        this.dealerBaseScore = 0;
     }
 
     /**
      * Draw a card or more.
      * @param {Hand} hand - The hand the player plays with. 
      */
-    hit(hand) {
+    private hit(hand: Hand) {
         let stop = false;
         while (!stop) {
             this.deck.drawCard(hand.cards);
-            let score = helpers.cardSum(hand.cards);
-            if (helpers.isBust(hand.cards)) {
+            let score = cardSum(hand.cards);
+            if (isBust(hand.cards)) {
                 return;
             }
             let action = 9;
@@ -60,7 +64,7 @@ class Player {
      * Double the stake on the current hand and draw one card.
      * @param {Hand} hand - The hand the player plays with. 
      */
-    double(hand) {
+    private double(hand: Hand) {
         if (this.money >= hand.stake) {
             this.money -= hand.stake;
             hand.stake *= 2;
@@ -74,7 +78,7 @@ class Player {
     * Split the hand in two and add a stake to the new hand.
     * @param {Hand} hand - The hand the player plays with. 
     */
-    split(hand) {
+    private split(hand: Hand) {
         if (this.money >= this.baseStake) {
             this.money -= this.baseStake;
             this.hands.push(new Hand(this.baseStake));
@@ -90,8 +94,8 @@ class Player {
     }
 
     // Return whether the player should give up or not.
-    shouldGiveUp() {
-        let score = helpers.cardSum(this.hands[0].cards);
+    shouldGiveUp(): boolean {
+        let score = cardSum(this.hands[0].cards);
         return GIVEUPSTRAT[score - 4][this.dealerBaseScore - 2] === 1;
     }
 
@@ -110,11 +114,11 @@ class Player {
      * Main method for the player when playing a hand.
      * @param {Hand} hand - The hand the player plays with.
      */
-    handTurn(hand) {
-        let score = helpers.cardSum(hand.cards);
+    handTurn(hand: Hand) {
+        let score = cardSum(hand.cards);
         let action = 9; // Error value for an action.
-        if (helpers.canSplit(hand.cards, this.hands.length)) {
-            if (hand.cards[0] === '1' && hand.cards[1] === '1') {
+        if (canSplit(hand.cards, this.hands.length)) {
+            if (hand.cards[0] === 1 && hand.cards[1] === 1) {
                 action = ACESTRAT[this.dealerBaseScore - 2];
             } else {
                 action = SPLITSTRAT[score - 4][this.dealerBaseScore - 2];
@@ -146,6 +150,3 @@ class Player {
         }
     }
 };
-
-exports.Player = Player;
-exports.Hand = Hand;

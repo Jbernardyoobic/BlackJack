@@ -1,16 +1,18 @@
-const helpers = require('./helpers');
-const { Deck } = require('./deck');
-const { Player } = require('./player');
+import { cardSum, isBlackJack } from './helpers';
+import { Deck } from './deck';
+import { Player } from './player'
 
 class Dealer {
-    constructor() {
-        // Cards of the dealer.
-        this.cards = [];
-    }
+    public cards: number[] = new Array();
+    constructor() {}
 }
 
-class BlackJack {
-    constructor(numberOfDecks, playersNumber, startMoney, baseStake) {
+export class BlackJack {
+    public deck: Deck;
+    public players: Player[];
+    public dealer: Dealer;
+    
+    constructor(numberOfDecks: number, playersNumber: number, startMoney: number, baseStake: number) {
         this.deck = new Deck(numberOfDecks);
         this.players = [];
         for (let i = 0; i < playersNumber; ++i) {
@@ -30,7 +32,7 @@ class BlackJack {
         this.deck.drawCard(this.dealer.cards);
         for (let p of this.players) {
             if (p.isPlaying) {
-                p.dealerBaseScore = helpers.cardSum(this.dealer.cards);
+                p.dealerBaseScore = cardSum(this.dealer.cards);
                 this.deck.drawCard(p.hands[0].cards);
             }
         }
@@ -51,7 +53,7 @@ class BlackJack {
      */
     blackJackCheck() {
         for (let p of this.players) {
-            if (p.isPlaying && helpers.isBlackJack(p.hands[0].cards) && p.dealerBaseScore < 10) {
+            if (p.isPlaying && isBlackJack(p.hands[0].cards) && p.dealerBaseScore < 10) {
                 p.isPlaying = false;
                 p.money += p.hands[0].stake * 2.5;
             }
@@ -63,10 +65,10 @@ class BlackJack {
      */
     dealerTurn() {
         this.deck.drawCard(this.dealer.cards);
-        let score = helpers.cardSum(this.dealer.cards);
+        let score = cardSum(this.dealer.cards);
         while (score < 17) {
             this.deck.drawCard(this.dealer.cards);
-            score = helpers.cardSum(this.dealer.cards);
+            score = cardSum(this.dealer.cards);
         }
     }
 
@@ -74,23 +76,23 @@ class BlackJack {
      * Check all the hands for results (Win, Draw, Loss).
      */
     playEnd() {
-        const dealerBJ = helpers.isBlackJack(this.dealer.cards);
-        const dealerScore = helpers.cardSum(this.dealer.cards);
+        const dealerBJ = isBlackJack(this.dealer.cards);
+        const dealerScore = cardSum(this.dealer.cards);
         for (let p of this.players) {
             if (p.isPlaying) {
                 for (let h of p.hands) {
-                    const score = helpers.cardSum(h.cards); 
+                    const score = cardSum(h.cards); 
                     if (score < 22) {
                         if (dealerScore > 21) {
                             p.money += 2 * h.stake;
                         } else if (score > dealerScore) {
                             p.money += 2 * h.stake;
                         } else if (score === dealerScore) {
-                            if (helpers.isBlackJack(h.cards) && dealerBJ) {
+                            if (isBlackJack(h.cards) && dealerBJ) {
                                 p.money += h.stake;
-                            } else if (helpers.isBlackJack(h.cards) && !dealerBJ) {
+                            } else if (isBlackJack(h.cards) && !dealerBJ) {
                                 p.money += 2 * h.stake;
-                            } else if (!helpers.isBlackJack(h.cards) && dealerBJ) {
+                            } else if (!isBlackJack(h.cards) && dealerBJ) {
                                 p.money += h.stake;
                             }
                         }
@@ -126,5 +128,3 @@ class BlackJack {
         this.emptyHands();
     }
 }
-
-exports.BlackJack = BlackJack;

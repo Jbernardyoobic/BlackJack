@@ -1,5 +1,5 @@
-const { Player, Hand } = require('../player');
-const { Deck } = require('../deck');
+const { Player, Hand } = require('../built/player');
+const { Deck } = require('../built/deck');
 
 describe('The player', () => {
     let p = new Player(1, 100, 2, new Deck(2));

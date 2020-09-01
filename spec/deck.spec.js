@@ -1,4 +1,4 @@
-const { Deck } = require('../deck');
+const { Deck } = require('../built/deck');
 
 it('Should return a complete deck', () => {
     let d = new Deck(6);

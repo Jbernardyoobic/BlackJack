@@ -1,4 +1,4 @@
-const helpers = require('../helpers');
+const helpers = require('../built/helpers');
 
 describe('The cardSum helper', () => {
     it('should return 4', () => {

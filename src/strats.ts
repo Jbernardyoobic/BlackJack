@@ -16,7 +16,7 @@
  * Each row represents the score of the player's hand.
  * Each column represents the base score of the dealer (1 card)
  */
-const GIVEUPSTRAT =
+export const GIVEUPSTRAT =
 [ // 2  3  4  5  6  7  8  9 10 11
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 4
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 5
@@ -38,7 +38,7 @@ const GIVEUPSTRAT =
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 21
 ];
 
-const HARDSTRAT =
+export const HARDSTRAT =
 [ // 2  3  4  5  6  7  8  9 10 11
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 4
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 5
@@ -60,7 +60,7 @@ const HARDSTRAT =
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 21
 ];
 
-const SOFTSTRAT =
+export const SOFTSTRAT =
 [ // 2  3  4  5  6  7  8  9 10 11
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 12
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 13
@@ -74,7 +74,7 @@ const SOFTSTRAT =
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 21
 ];
 
-const SPLITSTRAT =
+export const SPLITSTRAT =
 [ // 2  3  4  5  6  7  8  9 10 11
     [3, 3, 3, 3, 3, 3, 1, 1, 1, 1], // 4 (2,2)
     [9, 9, 9, 9, 9, 9, 9, 9, 9, 9], // 5
@@ -97,10 +97,4 @@ const SPLITSTRAT =
 ];
 
             //    2  3  4  5  6  7  8  9 10 11
-const ACESTRAT = [3, 3, 3, 3, 3, 3, 3, 3, 3, 1];
-
-exports.ACESTRAT = ACESTRAT;
-exports.SPLITSTRAT = SPLITSTRAT;
-exports.SOFTSTRAT = SOFTSTRAT;
-exports.HARDSTRAT = HARDSTRAT;
-exports.GIVEUPSTRAT = GIVEUPSTRAT;
+export const ACESTRAT = [3, 3, 3, 3, 3, 3, 3, 3, 3, 1];

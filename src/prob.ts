@@ -1,8 +1,11 @@
-class Node {
-    constructor(value, prob) {
+class PNode {
+    public value: number;
+    public prob: number;
+    public children: PNode[];
+
+    constructor(value: number, prob: number) {
         this.value = value;
         this.prob = prob;
-        this.children = [];
     }
 }
 
@@ -10,7 +13,7 @@ const DECKS = 6;
 const CARDPROB = 24 / (DECKS * 52);
 const TENPROB = 96 / (DECKS * 52);
 
-function generateChildren(n) {
+function generateChildren(n: PNode) {
     if (n.value > 16) {
         return;
     }
@@ -22,14 +25,14 @@ function generateChildren(n) {
         } else {
             newValue += i;
         }
-        n.children.push(new Node(newValue, newProb));
+        n.children.push(new PNode(newValue, newProb));
     }
-    for (c of n.children) {
+    for (let c of n.children) {
         generateChildren(c);
     }
 }
 
-function bustProb(n) {
+function bustProb(n: PNode): number {
     if (n.value < 22 && n.children.length === 0) {
         return 0;
     }
@@ -37,14 +40,14 @@ function bustProb(n) {
         return n.prob;
     }
     let p = 0;
-    for (c of n.children) {
+    for (let c of n.children) {
         let tmp = bustProb(c);
         p += n.prob * tmp;
     }
     return p;
 }
 
-function mainBustProb(root) {
+function mainBustProb(root: PNode): number {
     if (root.value > 21) {
         return 1;
     }
@@ -52,7 +55,7 @@ function mainBustProb(root) {
         return 0;
     }
     let s = 0;
-    for (c of root.children) {
+    for (let c of root.children) {
         let tmp = bustProb(c);
         s += tmp;
     }
@@ -60,7 +63,7 @@ function mainBustProb(root) {
 }
 
 for (let i = 2; i < 22; ++i) {
-    let t = new Node(i, 1);
+    let t = new PNode(i, 1);
     generateChildren(t);
     let p = Math.round(mainBustProb(t) * 10000)/100;
     console.log(i + ' -> ' + p + '%');

@@ -8,10 +8,26 @@ class Dealer {
 }
 
 export class BlackJack {
-    public deck: Deck;
+    /**
+     * @property deck - The card deck for the game.
+     */
+    private deck: Deck;
+    /**
+     * @property dealer - The dealer.
+     */
+    private dealer: Dealer;
+    /**
+     * @property players - The player array.
+     */
     public players: Player[];
-    public dealer: Dealer;
     
+    /**
+     * Constructor for the BlackJack class
+     * @param numberOfDecks - The number of 52 cards decks in the game
+     * @param playersNumber - The number of players
+     * @param startMoney - The money players start with
+     * @param baseStake - The base stake for each play
+     */
     constructor(numberOfDecks: number, playersNumber: number, startMoney: number, baseStake: number) {
         this.deck = new Deck(numberOfDecks);
         this.players = [];
@@ -21,8 +37,10 @@ export class BlackJack {
         this.dealer = new Dealer();
     }
 
-    // Deal one card to every player, then one to the dealer and finally another card for every player.
-    deal() {
+    /**
+     * Deal one card to every player, then one to the dealer and finally another card for every player.
+     */
+    private deal() {
         for (let p of this.players) {
             p.payStake();
             if (p.isPlaying) {
@@ -38,8 +56,10 @@ export class BlackJack {
         }
     }
 
-    // Depending on their hand and the dealer's hand, the player can choose to give up and get back half the stake.
-    giveUpOption() {
+    /**
+     * Depending on their hand and the dealer's cards, the player can choose to give up and get back half the stake.
+     */
+    private giveUpOption() {
         for (let p of this.players) {
             if (p.isPlaying && p.shouldGiveUp()) {
                 p.isPlaying = false;
@@ -50,8 +70,9 @@ export class BlackJack {
 
     /**
      *  Check at the beginning if a player has won already.
+     *  In case of blackjack, the player stops playing and gets 2.5 * stake.
      */
-    blackJackCheck() {
+    private blackJackCheck() {
         for (let p of this.players) {
             if (p.isPlaying && isBlackJack(p.hands[0].cards) && p.dealerBaseScore < 10) {
                 p.isPlaying = false;
@@ -63,7 +84,7 @@ export class BlackJack {
     /**
      * Dealer only hits. Stops at 17 Soft.
      */
-    dealerTurn() {
+    private dealerTurn() {
         this.deck.drawCard(this.dealer.cards);
         let score = cardSum(this.dealer.cards);
         while (score < 17) {
@@ -75,7 +96,7 @@ export class BlackJack {
     /**
      * Check all the hands for results (Win, Draw, Loss).
      */
-    playEnd() {
+    private playEnd() {
         const dealerBJ = isBlackJack(this.dealer.cards);
         const dealerScore = cardSum(this.dealer.cards);
         for (let p of this.players) {
@@ -102,8 +123,8 @@ export class BlackJack {
         }
     }
 
-    // Remove cards from the hands.
-    emptyHands() {
+    // Remove cards from hands.
+    private emptyHands() {
         for (let p of this.players) {
             p.hands = [];
         }

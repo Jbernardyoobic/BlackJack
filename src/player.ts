@@ -4,16 +4,24 @@ import { SOFTSTRAT, HARDSTRAT, SPLITSTRAT, ACESTRAT, GIVEUPSTRAT } from './strat
 
 // Represents a hand.
 export class Hand {
+    /**
+     * @property The cards of the hand.
+     */
     public cards: number[] = new Array();
+    /**
+     * @property The stake of the hand.
+     */
     public stake: number;
 
+    /**
+     * Constructor for the Hand class.
+     * @param baseStake - The base stake value.
+     */
     constructor(baseStake: number) {
-        // Stake of the hand.
         this.stake = baseStake;
     }
 }
 
-// Represents a player
 export class Player {
     public id: number;
     public money: number;
@@ -24,7 +32,7 @@ export class Player {
     private deck: Deck;
 
     /**
-     * Player constructor.
+     * The constructor for the Player class.
      * @param {Number} id - id to distinguish players between them. 
      */
     constructor(id: number, startMoney: number, baseStake: number, deck: Deck) {

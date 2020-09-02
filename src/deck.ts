@@ -1,8 +1,21 @@
 export class Deck {
+    /**
+     * @property The number of 52 cards decks in the deck.
+     */
     public decksNumber: number;
+    /**
+     * @property The deck containing the cards for the play.
+     */
     public deck: number[] = new Array();
+    /**
+     * @property The occurences of each card in the deck.
+     */
     public occurences: number[] = new Array();
 
+    /**
+     * Constructor for the Deck class.
+     * @param decksNumber - The number of 52 cards decks in the deck
+     */
     constructor(decksNumber: number) {
         this.decksNumber = decksNumber;
         this.newDeck();
@@ -30,7 +43,9 @@ export class Deck {
         this.shuffle();
     }
 
-    // Random shuffling of the deck.
+    /**
+     * Random shuffling of the deck.
+     */
     shuffle() {
         for (let i = this.deck.length - 1; i > 0; i--) {
           let j = Math.floor(Math.random() * (i + 1));

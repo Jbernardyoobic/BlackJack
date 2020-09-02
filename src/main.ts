@@ -3,9 +3,9 @@ import { Player } from './player';
 
 /**
  * Show the stats of the n plays of the game.
- * @param {Player[]} players - The list of players.
+ * @param players The list of players.
  */
-function showStats(players: Player[], startMoney: number) {
+function showStats(players: Player[], startMoney: number): void {
     let s = 0;
     let max = 0;
     let min = 99999999999999;
@@ -27,10 +27,14 @@ function showStats(players: Player[], startMoney: number) {
 }
 
 /**
- * Call the play() function n times.
- * @param {number} n - Number of times to call play().
+ * Start the game.
+ * @param numberOfPlays Number of times the play() function will be called.
+ * @param numberOfDecks Number of 52 cards decks in the game.
+ * @param playersNumber Number of players in the game.
+ * @param startMoney Start money for every player.
+ * @param baseStake Base stake for every play.
  */
-function game(numberOfPlays: number, numberOfDecks: number, playersNumber: number, startMoney: number, baseStake: number) {
+function game(numberOfPlays: number, numberOfDecks: number, playersNumber: number, startMoney: number, baseStake: number): void {
     const bj = new BlackJack(numberOfDecks, playersNumber, startMoney, baseStake);
     for (let i = 0; i < numberOfPlays; ++i) {
         bj.play();

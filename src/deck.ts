@@ -14,7 +14,7 @@ export class Deck {
 
     /**
      * Constructor for the Deck class.
-     * @param decksNumber - The number of 52 cards decks in the deck
+     * @param decksNumber The number of 52 cards decks in the deck
      */
     constructor(decksNumber: number) {
         this.decksNumber = decksNumber;
@@ -24,7 +24,7 @@ export class Deck {
     /**
     * The deck is composed of numbers from 1 to 10 representing the value of the card and not the card itself.
     */
-    newDeck() {
+    newDeck(): void {
         this.deck = new Array();
         this.occurences = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         const heads = ['J', 'Q', 'K'];
@@ -46,7 +46,7 @@ export class Deck {
     /**
      * Random shuffling of the deck.
      */
-    shuffle() {
+    private shuffle(): void {
         for (let i = this.deck.length - 1; i > 0; i--) {
           let j = Math.floor(Math.random() * (i + 1));
           [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
@@ -55,9 +55,9 @@ export class Deck {
 
     /**
      * Draw a card from the deck and put it in the designated hand.
-     * @param {number[]} cards - The hand in which the new card will be added.
+     * @param cards The hand in which the new card will be added.
      */
-    drawCard(cards: number[]) {
+    drawCard(cards: number[]): void {
         let c = this.deck.shift();
         cards.push(c);
         this.occurences[c - 1]--;

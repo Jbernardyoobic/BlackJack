@@ -15,7 +15,7 @@ export class Hand {
 
     /**
      * Constructor for the Hand class.
-     * @param baseStake - The base stake value.
+     * @param baseStake The base stake value.
      */
     constructor(baseStake: number) {
         this.stake = baseStake;
@@ -23,32 +23,52 @@ export class Hand {
 }
 
 export class Player {
+    /**
+     * @property Id of the player.
+     */
     public id: number;
+    /**
+     * @property Money of the player.
+     */
     public money: number;
+    /**
+     * @property Array of Hand objects.
+     */
     public hands: Hand[] = new Array();
+    /**
+     * @property Whether the player is playing or not.
+     */
     public isPlaying: boolean = true;
+    /**
+     * @property Base stake for every hand.
+     */
     public baseStake: number;
+    /**
+     * @property Score of the first card drawn by the dealer.
+     */
     public dealerBaseScore: number = 0;
+    /**
+     * @property The deck for the game.
+     */
     private deck: Deck;
 
     /**
-     * The constructor for the Player class.
-     * @param {Number} id - id to distinguish players between them. 
+     * Constructor for the Player class.
+     * @param id Id of the player.
+     * @param startMoney Start money of the player.
+     * @param baseStake Base stake for every hand.
+     * @param deck The deck for the game.
      */
     constructor(id: number, startMoney: number, baseStake: number, deck: Deck) {
-        // Id of the player.
         this.id = id;
-        // Money of the player.
         this.money = startMoney;
-        // Base stake for each play.
         this.baseStake = baseStake;
-        // Reference to the deck.
         this.deck = deck;
     }
 
     /**
      * Draw a card or more.
-     * @param {Hand} hand - The hand the player plays with. 
+     * @param hand The hand the player plays with. 
      */
     private hit(hand: Hand) {
         let stop = false;
@@ -70,9 +90,9 @@ export class Player {
 
     /**
      * Double the stake on the current hand and draw one card.
-     * @param {Hand} hand - The hand the player plays with. 
+     * @param hand The hand the player plays with. 
      */
-    private double(hand: Hand) {
+    private double(hand: Hand): void {
         if (this.money >= hand.stake) {
             this.money -= hand.stake;
             hand.stake *= 2;
@@ -84,9 +104,9 @@ export class Player {
 
     /**
     * Split the hand in two and add a stake to the new hand.
-    * @param {Hand} hand - The hand the player plays with. 
+    * @param hand The hand the player plays with. 
     */
-    private split(hand: Hand) {
+    private split(hand: Hand): void {
         if (this.money >= this.baseStake) {
             this.money -= this.baseStake;
             this.hands.push(new Hand(this.baseStake));
@@ -108,7 +128,7 @@ export class Player {
     }
 
     // Remove stake money from the player.
-    payStake() {
+    payStake(): void {
         if (this.money >= this.baseStake * 2) {
             this.hands.push(new Hand(this.baseStake));
             this.money -= this.baseStake;
@@ -120,9 +140,9 @@ export class Player {
 
     /**
      * Main method for the player when playing a hand.
-     * @param {Hand} hand - The hand the player plays with.
+     * @param hand The hand the player plays with.
      */
-    handTurn(hand: Hand) {
+    handTurn(hand: Hand): void {
         let score = cardSum(hand.cards);
         let action = 9; // Error value for an action.
         if (canSplit(hand.cards, this.hands.length)) {

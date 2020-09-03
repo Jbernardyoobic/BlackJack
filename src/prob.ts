@@ -1,7 +1,9 @@
+import { Deck } from "./deck";
+
 class PNode {
     public value: number;
     public prob: number;
-    public children: PNode[];
+    public children: PNode[] = new Array();
 
     constructor(value: number, prob: number) {
         this.value = value;
@@ -9,62 +11,128 @@ class PNode {
     }
 }
 
-const DECKS = 6;
-const CARDPROB = 24 / (DECKS * 52);
-const TENPROB = 96 / (DECKS * 52);
+class TestDeck {
+    public occurences: number[] = new Array();
+    public len: number = 0;
 
-function generateChildren(n: PNode) {
-    if (n.value > 16) {
-        return;
+    constructor() {}
+}
+
+class ProbabilityCalculator {
+    private testDeck: TestDeck;
+
+    constructor(deck: Deck, value: number, isDealer: boolean) {
+        this.testDeck = new TestDeck();
+        this.testDeck.len = deck.deck.length;
+        this.testDeck.occurences = Object.assign([], deck.occurences);
     }
-    for (let i = 1; i < 11; ++i) {
-        let newValue = n.value;
-        let newProb = i === 10 ? TENPROB : CARDPROB;
-        if (i === 1 && (n.value + 11 < 22)) {
-            newValue += 11;
-        } else {
-            newValue += i;
+
+    generateTree(n: PNode, isDealer: boolean) {
+        if (isDealer && n.value > 16) {
+            return;
         }
-        n.children.push(new PNode(newValue, newProb));
+        if (n.value >= 21) {
+            return;
+        }
+        for (let i = 1; i < 11; ++i) {
+            let newValue = n.value;
+            let newProb = this.testDeck.occurences[i] / this.testDeck.len;
+            if (i === 1 && (n.value + 11 < 22)) {
+                newValue += 11;
+            } else {
+                newValue += i;
+            }
+            this.testDeck.occurences[i]--;
+            this.testDeck.len--;
+            n.children.push(new PNode(newValue, newProb));
+        }
+        for (let c of n.children) {
+            this.generateTree(c, isDealer);
+        }
     }
-    for (let c of n.children) {
-        generateChildren(c);
-    }
-}
 
-function bustProb(n: PNode): number {
-    if (n.value < 22 && n.children.length === 0) {
-        return 0;
+    generateNextCardTree(n: PNode) {
+        for (let i = 1; i < 11; ++i) {
+            let newValue = n.value;
+            let newProb = this.testDeck.occurences[i] / this.testDeck.len;
+            if (i === 1 && (n.value + 11 < 22)) {
+                newValue += 11;
+            } else {
+                newValue += i;
+            }
+            this.testDeck.occurences[i]--;
+            this.testDeck.len--;
+            n.children.push(new PNode(newValue, newProb));
+        }
     }
-    if (n.children.length === 0) {
-        return n.prob;
-    }
-    let p = 0;
-    for (let c of n.children) {
-        let tmp = bustProb(c);
-        p += n.prob * tmp;
-    }
-    return p;
-}
 
-function mainBustProb(root: PNode): number {
-    if (root.value > 21) {
-        return 1;
+    bustProb(n: PNode): number {
+        if (n.value < 22 && n.children.length === 0) {
+            return 0;
+        }
+        if (n.children.length === 0) {
+            return n.prob;
+        }
+        let p = 0;
+        for (let c of n.children) {
+            let tmp = this.bustProb(c);
+            p += n.prob * tmp;
+        }
+        return p;
     }
-    if (root.value > 16) {
-        return 0;
-    }
-    let s = 0;
-    for (let c of root.children) {
-        let tmp = bustProb(c);
-        s += tmp;
-    }
-    return s;
-}
 
-for (let i = 2; i < 22; ++i) {
-    let t = new PNode(i, 1);
-    generateChildren(t);
-    let p = Math.round(mainBustProb(t) * 10000)/100;
-    console.log(i + ' -> ' + p + '%');
+
+    mainBustProb(root: PNode, isDealer: boolean): number {
+        if (root.value > 21) {
+            return 1;
+        }
+        if (root.value > 16 && isDealer) {
+            return 0;
+        }
+        let s = 0;
+        for (let c of root.children) {
+            let tmp = this.bustProb(c);
+            s += tmp;
+        }
+        return s;
+    }
+
+    valueProb(value: number, n: PNode): number {
+        if (n.value > value) {
+            return 0;
+        }
+        if (n.value === value) {
+            return n.prob;
+        }
+        let p = 0;
+        for (let c of n.children) {
+            let tmp = this.valueProb(value, c);
+            p += n.prob * tmp;
+        }
+        return p;
+    }
+
+    mainValueProb(value: number, root: PNode): number {
+        if (value === root.value) return 1;
+        if (value < root.value) return 0;
+        let s = 0;
+        for (let c of root.children) {
+            let tmp = this.valueProb(value, c);
+            s += tmp;
+        }
+        return s;
+    }
+
+    probToPercentage(p: number) {
+        return Math.round(p * 10000)/100;
+    }
+
+    drawProb(playerTree: PNode, dealerTree: PNode) {
+        let p = 0;
+        for (let i = 17; i < 22; ++i) {
+            p += this.mainValueProb(i, playerTree) * this.mainValueProb(i, dealerTree);
+        }
+        return p;
+    }
+
 }
